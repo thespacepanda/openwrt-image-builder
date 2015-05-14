@@ -14,7 +14,7 @@ curl $SRC | tar xj
 cd $IMAGE_BUILDER
 
 # Configure package repositiories
-PACKAGE_BASE_URL="$HTTP/$OPENWRT_BASE_URL/$TARGET_ARCH/generic/packages"
+PACKAGE_BASE_URL="$HTTP/$OPENWRT_BASE_URL/$ARCH/generic/packages"
 cat <<EOF > repositories.conf
 src/gz chaos_calmer_base $PACKAGE_BASE_URL/base
 src/gz chaos_calmer_luci $PACKAGE_BASE_URL/luci
