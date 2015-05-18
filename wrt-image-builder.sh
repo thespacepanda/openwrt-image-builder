@@ -82,7 +82,7 @@ config interface 'bat'
 EOF
 
 # Actually build the image, adding these packages
-make image PACKAGES="kmod-usb-core kmod-usb2 kmod-ledtrig-usbdev kmod-batman-adv batctl" FILES=files/
+make image PROFILE=TLMR3040 PACKAGES="kmod-usb-core kmod-usb2 kmod-ledtrig-usbdev kmod-batman-adv batctl" FILES=files/
 
 # Copy the generated image back to the current directory
 popd
