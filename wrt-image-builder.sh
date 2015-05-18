@@ -7,14 +7,24 @@ HTTP="http:/"
 HTTPS="https:/"
 OPENWRT_BASE_URL="downloads.openwrt.org/snapshots/$VERSION"
 SRC="$HTTPS/$OPENWRT_BASE_URL/$ARCH/generic/$IMAGE_BUILDER.tar.bz2"
+TARFILE="$IMAGE_BUILDER.tar.bz2"
 
 # Get Dependencies (Ubuntu only for now)
 sudo apt-get install subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc
 
 # Download Image Builder
+if ! [ -e $TARFILE ]
+then
+    wget $SRC
+fi
+rm -rf /tmp/$IMAGE_BUILDER
+tar xjfv $TARFILE -C /tmp
 pushd /tmp
-curl $SRC | tar xj
 cd $IMAGE_BUILDER
+
+# Get Configuration options from user
+echo "Please enter an unused ip address on the mesh: "
+read IP_ADDRESS
 
 # Configure package repositiories
 PACKAGE_BASE_URL="$HTTP/$OPENWRT_BASE_URL/$ARCH/generic/packages"
@@ -77,7 +87,7 @@ config interface 'bat'
         option ifname 'bat0'
         option proto 'static'
         option mtu '1500'
-        option ipaddr '10.0.0.10'
+        option ipaddr $IP_ADDRESS
         option netmask '255.255.255.0'
 EOF
 
@@ -86,5 +96,4 @@ make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl" FILES=files/
 
 # Copy the generated image back to the current directory
 popd
-mkdir -p images
-cp /tmp/$IMAGE_BUILDER/bin/$ARCH/*mr3040* images/
+cp -f /tmp/$IMAGE_BUILDER/bin/$ARCH/*mr3040* images/
