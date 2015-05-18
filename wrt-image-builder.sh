@@ -8,6 +8,9 @@ HTTPS="https:/"
 OPENWRT_BASE_URL="downloads.openwrt.org/snapshots/$VERSION"
 SRC="$HTTPS/$OPENWRT_BASE_URL/$ARCH/generic/$IMAGE_BUILDER.tar.bz2"
 
+# Get Dependencies (Ubuntu only for now)
+sudo apt-get install subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc
+
 # Download Image Builder
 pushd /tmp
 curl $SRC | tar xj
@@ -80,3 +83,8 @@ EOF
 
 # Actually build the image, adding these packages
 make image PACKAGES="kmod-usb-core kmod-usb2 kmod-ledtrig-usbdev kmod-batman-adv batctl" FILES=files/
+
+# Copy the generated image back to the current directory
+popd
+mkdir -p images
+cp /tmp/$IMAGE_BUILDER/bin/$ARCH/* images/
