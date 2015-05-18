@@ -38,7 +38,14 @@ config wifi-device  radio0
         option channel  1
         option hwmode   11g
         option path     'platform/ar933x_wmac'
-        option htmode   HT20
+        option htmode HT20
+
+config wifi-iface
+        option device           radio0
+        option network          'lan0'
+        option mode             ap
+        option ssid             'BANE'
+        option encryption       'none'
 
 config wifi-iface
         option device   radio0
@@ -46,9 +53,9 @@ config wifi-iface
         option network  mesh
         option mode     adhoc
         option ssid     mesh
-        option bssid    '02:12:34:56:78:9A'
-        option mcast_rate       18000
-        option encryption       none
+        option bssid '02:12:34:56:78:9A'
+        option mcast_rate 18000
+        option encryption none
 EOF
 # Network configuration for batman
 cat <<EOF > files/etc/config/network
@@ -59,26 +66,35 @@ config interface 'loopback'
         option netmask '255.0.0.0'
 
 config globals 'globals'
-        option ula_prefix 'fd9f:e34b:6e7f::/48'
+        option ula_prefix 'fdf3:0a0a:d536::/48'
 
-config interface 'lan'
+config interface 'lan1'
         option ifname 'eth0'
         option force_link '1'
         option proto 'static'
-        option ipaddr '192.168.1.1'
+        #option ipaddr '10.0.1.10'
+        option netmask '255.255.255.0'
+
+config interface 'lan0' # Bridge ethernet and bat0 w/ static IP address
+        option type 'bridge'
+        option ifname 'bat0 eth0'
+        #option proto 'dhcp'
+        option proto 'static'
+        option force_link '1'
+        option ipaddr '10.0.0.3'
         option netmask '255.255.255.0'
 
 config interface 'mesh'
-        option mtu      1532
-        option proto    batadv
-        option mesh     bat0
+        option mtu 1532
+        option proto batadv
+        option mesh bat0
 
 config interface 'bat'
-        option ifname   'bat0'
-        option proto    'static'
-        option mtu      '1500'
-        option ipaddr   '10.0.0.1'
-        option netmask  '255.255.255.0'
+        option ifname 'bat0'
+        #option proto 'static'
+        option mtu '1500'
+        #option ipaddr '10.0.0.3'
+        #option netmask '255.255.255.0'
 EOF
 
 # Actually build the image, adding these packages
