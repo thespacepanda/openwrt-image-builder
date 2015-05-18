@@ -87,4 +87,4 @@ make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl" FILES=files/
 # Copy the generated image back to the current directory
 popd
 mkdir -p images
-cp /tmp/$IMAGE_BUILDER/bin/$ARCH/* images/
+cp /tmp/$IMAGE_BUILDER/bin/$ARCH/*mr3040* images/
