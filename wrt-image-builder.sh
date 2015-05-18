@@ -40,14 +40,7 @@ config wifi-device  radio0
         option path     'platform/ar933x_wmac'
         option htmode HT20
 
-config wifi-iface
-        option device           radio0
-        option network          'lan0'
-        option mode             ap
-        option ssid             'BANE'
-        option encryption       'none'
-
-config wifi-iface
+config wifi-iface 'mesh0'
         option device   radio0
         option ifname   mesh0
         option network  mesh
@@ -68,20 +61,11 @@ config interface 'loopback'
 config globals 'globals'
         option ula_prefix 'fdf3:0a0a:d536::/48'
 
-config interface 'lan1'
+config interface 'lan'
         option ifname 'eth0'
         option force_link '1'
         option proto 'static'
-        #option ipaddr '10.0.1.10'
-        option netmask '255.255.255.0'
-
-config interface 'lan0' # Bridge ethernet and bat0 w/ static IP address
-        option type 'bridge'
-        option ifname 'bat0 eth0'
-        #option proto 'dhcp'
-        option proto 'static'
-        option force_link '1'
-        option ipaddr '10.0.0.3'
+        option ipaddr '192.168.1.1'
         option netmask '255.255.255.0'
 
 config interface 'mesh'
@@ -91,10 +75,10 @@ config interface 'mesh'
 
 config interface 'bat'
         option ifname 'bat0'
-        #option proto 'static'
+        option proto 'static'
         option mtu '1500'
-        #option ipaddr '10.0.0.3'
-        #option netmask '255.255.255.0'
+        option ipaddr '10.0.0.10'
+        option netmask '255.255.255.0'
 EOF
 
 # Actually build the image, adding these packages
