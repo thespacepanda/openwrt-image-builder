@@ -22,10 +22,6 @@ tar xjfv $TARFILE -C /tmp
 pushd /tmp
 cd $IMAGE_BUILDER
 
-# Get Configuration options from user
-echo "Please enter an unused ip address on the mesh: "
-read IP_ADDRESS
-
 # Configure package repositiories
 PACKAGE_BASE_URL="$HTTP/$OPENWRT_BASE_URL/$ARCH/generic/packages"
 cat <<EOF > repositories.conf
@@ -82,13 +78,6 @@ config interface 'mesh'
         option mtu 1532
         option proto batadv
         option mesh bat0
-
-config interface 'bat'
-        option ifname 'bat0'
-        option proto 'static'
-        option mtu '1500'
-        option ipaddr $IP_ADDRESS
-        option netmask '255.255.255.0'
 EOF
 
 # Actually build the image, adding these packages
