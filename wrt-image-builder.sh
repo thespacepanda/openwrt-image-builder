@@ -19,6 +19,7 @@ then
 fi
 rm -rf /tmp/$IMAGE_BUILDER
 tar xjfv $TARFILE -C /tmp
+cp -Rv files/ /tmp/$IMAGE_BUILDER
 pushd /tmp
 cd $IMAGE_BUILDER
 
@@ -33,51 +34,6 @@ src/gz chaos_calmer_routing $PACKAGE_BASE_URL/routing
 src/gz chaos_calmer_telephony $PACKAGE_BASE_URL/telephony
 ## This is the local package repository, do not remove!
 src imagebuilder file:packages
-EOF
-
-# Configuration files
-mkdir -p files/etc/config
-# Wireless configuration for batman
-cat <<EOF > files/etc/config/wireless
-config wifi-device  radio0
-        option type     mac80211
-        option channel  1
-        option hwmode   11g
-        option path     'platform/ar933x_wmac'
-        option htmode HT20
-
-config wifi-iface 'mesh0'
-        option device   radio0
-        option ifname   mesh0
-        option network  mesh
-        option mode     adhoc
-        option ssid     mesh
-        option bssid '02:12:34:56:78:9A'
-        option mcast_rate 18000
-        option encryption none
-EOF
-# Network configuration for batman
-cat <<EOF > files/etc/config/network
-config interface 'loopback'
-        option ifname 'lo'
-        option proto 'static'
-        option ipaddr '127.0.0.1'
-        option netmask '255.0.0.0'
-
-config globals 'globals'
-        option ula_prefix 'fdf3:0a0a:d536::/48'
-
-config interface 'lan'
-        option ifname 'eth0'
-        option force_link '1'
-        option proto 'static'
-        option ipaddr '192.168.1.1'
-        option netmask '255.255.255.0'
-
-config interface 'mesh'
-        option mtu 1532
-        option proto batadv
-        option mesh bat0
 EOF
 
 # Actually build the image, adding these packages

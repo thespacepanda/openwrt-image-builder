@@ -1,0 +1,23 @@
+config wifi-device radio0
+        option type mac80211
+        option channel 1
+        option hwmode 11g
+        option path 'platform/ar933x_wmac'
+        option htmode HT20
+
+config wifi-iface
+        option device radio0
+        option network mesh_bridge
+        option mode ap
+        option ssid meshAP
+        option encryption none
+
+config wifi-iface
+        option device radio0
+        option ifname mesh0
+        option network mesh
+        option mode adhoc
+        option ssid mesh
+        option bssid '02:12:34:56:78:9A'
+        option mcast_rate 18000
+        option encryption none
