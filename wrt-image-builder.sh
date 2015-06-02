@@ -15,13 +15,27 @@ sudo apt-get install subversion build-essential libncurses5-dev zlib1g-dev gawk 
 # Download Image Builder
 if ! [ -e $TARFILE ]
 then
+    echo "Tarfile has not been fetched; fetching..."
     wget $SRC
 fi
 rm -rf /tmp/$IMAGE_BUILDER
-tar xjfv $TARFILE -C /tmp
-cp -Rv files/ /tmp/$IMAGE_BUILDER
+echo "Untarring image builder..."
+tar xjf $TARFILE -C /tmp
+echo "Moving into build directory"
 pushd /tmp
 cd $IMAGE_BUILDER
+echo "Creating configuration directory"
+mkdir -p files/etc/config/
+
+# Get node specific settings
+TYPE=0
+while [ TYPE -ne 1 ] && [ TYPE -ne 2 ]
+do
+    echo "AP (1) or Gateway (2): "
+    read TYPE
+done
+echo "Enter a hostname for this node: "
+read HOSTNAME
 
 # Configure package repositiories
 PACKAGE_BASE_URL="$HTTP/$OPENWRT_BASE_URL/$ARCH/generic/packages"
@@ -35,6 +49,21 @@ src/gz chaos_calmer_telephony $PACKAGE_BASE_URL/telephony
 ## This is the local package repository, do not remove!
 src imagebuilder file:packages
 EOF
+
+cat <<EOF > files/etc/config/system
+config 'system'
+        option 'hostname' $HOSTNAME
+EOF
+
+if [ TYPE -eq 1 ]
+then
+    git clone https://github.com/bmuk/batman-ap files/etc/config
+else
+    git clone https://github.com/bmuk/batman-gateway files/etc/config
+    echo "Provide an unused IP address for the gateway: "
+    read IP
+    sed -i 's/10.0.0.1/$IP' files/etc/config/network
+fi
 
 # Actually build the image, adding these packages
 make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl" FILES=files/
