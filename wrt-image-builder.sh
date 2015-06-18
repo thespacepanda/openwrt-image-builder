@@ -27,25 +27,8 @@ cd $IMAGE_BUILDER
 echo "Creating configuration directory"
 mkdir -p files/etc
 
-# Get node specific settings
-TYPE=0
-while [ $TYPE -ne 1 ] && [ $TYPE -ne 2 ]
-do
-    echo "AP (1) or Gateway (2): "
-    read TYPE
-done
 echo "Enter a hostname for this node: "
 read HOSTNAME
-
-if [ $TYPE -eq 1 ]
-then
-    git clone https://github.com/bmuk/batman-ap files/etc/config
-else
-    git clone https://github.com/bmuk/batman-gateway files/etc/config
-    echo "Provide an unused IP address for the gateway: "
-    read IP
-    sed -i 's/10.0.0.1/$IP' files/etc/config/network
-fi
 
 # Configure package repositiories
 PACKAGE_BASE_URL="$HTTP/$OPENWRT_BASE_URL/$ARCH/generic/packages"
@@ -66,7 +49,7 @@ config 'system'
 EOF
 
 # Actually build the image, adding these packages
-make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl" FILES=files/
+make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl git" FILES=files/
 
 # Copy the generated image back to the current directory
 popd

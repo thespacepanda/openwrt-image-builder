@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# http://wiki.openwrt.org/toh/tp-link/tl-mr3040#hardware_slide_switch_v2
+
+sleep 1
+logger "log: $BUTTON -- $ACTION"
+
+if [ $ACTION == "released" ] ; then
+    if [ $BUTTON == "BTN_1" ] ; then
+        logger "Slider WISP"
+        # Do stuff here
+    elif [ $BUTTON == "BTN_0" ] && grep -qe "sw1.*in  lo" /sys/kernel/debug/gpio ; then
+        logger "Slider 3G 4G"
+        # Do stuff here
+    fi
+elif [ $BUTTON == "BTN_0" ] || [ $BUTTON == "BTN_1" ] ; then
+    if grep -qe "sw1.*in  hi" /sys/kernel/debug/gpio ; then
+        if grep -qe "sw2.*in  hi" /sys/kernel/debug/gpio ; then
+            logger "Slider AP"
+            # Do stuff here
+        fi
+    fi
+fi
