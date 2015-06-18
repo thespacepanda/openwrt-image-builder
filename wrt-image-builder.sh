@@ -10,7 +10,7 @@ SRC="$HTTPS/$OPENWRT_BASE_URL/$ARCH/generic/$IMAGE_BUILDER.tar.bz2"
 TARFILE="$IMAGE_BUILDER.tar.bz2"
 
 # Get Dependencies (Ubuntu only for now)
-sudo apt-get install subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc
+sudo apt-get install -y subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc
 
 # Download Image Builder
 if ! [ -e $TARFILE ]
