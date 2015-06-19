@@ -21,11 +21,12 @@ fi
 rm -rf /tmp/$IMAGE_BUILDER
 echo "Untarring image builder..."
 tar xjf $TARFILE -C /tmp
-echo "Moving into build directory"
+echo "Copying configuration files.."
+cp -Rf files /tmp/$IMAGE_BUILDER
+echo "Moving into build directory..."
 pushd /tmp
 cd $IMAGE_BUILDER
-echo "Creating configuration directory"
-mkdir -p files/etc
+mkdir -p files/etc/config
 
 echo "Enter a hostname for this node: "
 read HOSTNAME
