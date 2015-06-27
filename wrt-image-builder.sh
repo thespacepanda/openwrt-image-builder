@@ -57,7 +57,7 @@ config 'system'
 EOF
 
 # Actually build the image, adding these packages
-make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl git" FILES=files/
+make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl" FILES=files/
 
 # Copy the generated image back to the current directory
 popd
