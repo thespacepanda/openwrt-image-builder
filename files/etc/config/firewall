@@ -1,0 +1,33 @@
+config 'zone'
+    option name lan
+    option network lan
+    option masq 1
+    option input ACCEPT
+    option output ACCEPT
+    option forward ACCEPT
+
+config 'zone'
+    option name mesh
+    option network mesh_bridge
+    option input ACCEPT
+    option output ACCEPT
+    option forward REJECT
+
+config 'forwarding'
+    option src mesh
+    option dest lan
+   
+config 'rule'
+    option name 'Allow DNS Queries'
+    option src mesh
+    option dest_port 53
+    option proto tcpudp
+    option target ACCEPT
+  
+config 'rule'
+    option name 'Allow DHCP request'
+    option src mesh
+    option src_port '67-68'
+    option dest_port '67-68'
+    option proto udp
+    option target ACCEPT

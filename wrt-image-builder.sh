@@ -9,8 +9,14 @@ OPENWRT_BASE_URL="downloads.openwrt.org/snapshots/$VERSION"
 SRC="$HTTPS/$OPENWRT_BASE_URL/$ARCH/generic/$IMAGE_BUILDER.tar.bz2"
 TARFILE="$IMAGE_BUILDER.tar.bz2"
 
+echo "Enter a hostname for this node: "
+read HOSTNAME
+
+echo "Enter an ip address for when this node is in gateway mode: "
+read IP_ADDRESS
+
 # Get Dependencies (Ubuntu only for now)
-sudo apt-get install -y subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc
+# sudo apt-get install -y subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc
 
 # Download Image Builder
 if ! [ -e $TARFILE ]
@@ -28,8 +34,9 @@ pushd /tmp
 cd $IMAGE_BUILDER
 mkdir -p files/etc/config
 
-echo "Enter a hostname for this node: "
-read HOSTNAME
+# Replace ip address in config files
+sed -i 's/IP_ADDRESS/$IP_ADDRESS/' files/etc/hotplug.d/button/10-slider
+sed -i 's/IP_ADDRESS/$IP_ADDRESS/' files/etc/config/network
 
 # Configure package repositiories
 PACKAGE_BASE_URL="$HTTP/$OPENWRT_BASE_URL/$ARCH/generic/packages"
