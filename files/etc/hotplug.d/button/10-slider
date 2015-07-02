@@ -9,6 +9,18 @@ if [ $ACTION == "released" ] ; then
     if [ $BUTTON == "BTN_1" ] ; then
         logger "Slider WISP"
         # Not sure what this should do yet
+        /etc/init.d/firewall disable
+        echo "
+            set batman-adv.bat0.gw_mode=client
+            set dhcp.mesh_bridge.ignore=1
+            set network.mesh_bridge.ifname='bat0'
+            set network.lan.proto=static
+            set network.lan.ipaddr=192.168.1.1
+            set network.lan.netmask=255.255.255.0
+            set network.bat.proto=dhcp
+            commit" \
+                | uci batch
+        reboot
     elif [ $BUTTON == "BTN_0" ] && grep -qe "sw1.*in  lo" /sys/kernel/debug/gpio ; then
         logger "Slider 3G 4G"
         # Gateway mode triggered
@@ -16,6 +28,7 @@ if [ $ACTION == "released" ] ; then
         echo "
         set batman-adv.bat0.gw_mode='server'
         set dhcp.mesh_bridge.ignore=0
+        set network.mesh_bridge.ifname='bat0'
         set network.lan.proto=dhcp
         set network.bat.proto=static
         set network.bat.ipaddr=IP_ADDRESS
@@ -33,12 +46,10 @@ elif [ $BUTTON == "BTN_0" ] || [ $BUTTON == "BTN_1" ] ; then
             echo "
             set batman-adv.bat0.gw_mode=client
             set dhcp.mesh_bridge.ignore=1
-            set network.lan.proto=static
-            set network.lan.ipaddr=192.168.1.1
-            set network.lan.netmask=255.255.255.0
+            set network.mesh_bridge.ifname='bat0 eth0'
             set network.bat.proto=dhcp
             commit" \
-                | uci batch
+                 | uci batch
             reboot
         fi
     fi
