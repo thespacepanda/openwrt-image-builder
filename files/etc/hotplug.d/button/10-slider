@@ -14,6 +14,7 @@ if [ $ACTION == "released" ] ; then
             set batman-adv.bat0.gw_mode=client
             set dhcp.mesh_bridge.ignore=1
             set network.mesh_bridge.ifname='bat0'
+            set network.lan.enabled=1
             set network.lan.proto=static
             set network.lan.ipaddr=192.168.1.1
             set network.lan.netmask=255.255.255.0
@@ -29,6 +30,7 @@ if [ $ACTION == "released" ] ; then
         set batman-adv.bat0.gw_mode='server'
         set dhcp.mesh_bridge.ignore=0
         set network.mesh_bridge.ifname='bat0'
+        set network.lan.enabled=1
         set network.lan.proto=dhcp
         set network.bat.proto=static
         set network.bat.ipaddr=IP_ADDRESS
@@ -47,6 +49,7 @@ elif [ $BUTTON == "BTN_0" ] || [ $BUTTON == "BTN_1" ] ; then
             set batman-adv.bat0.gw_mode=client
             set dhcp.mesh_bridge.ignore=1
             set network.mesh_bridge.ifname='bat0 eth0'
+            set network.lan.enabled=0
             set network.bat.proto=dhcp
             commit" \
                  | uci batch
