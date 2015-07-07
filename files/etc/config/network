@@ -27,3 +27,4 @@ config interface 'bat'
         option mtu '1500'
         option ipaddr IP_ADDRESS
         option netmask 255.255.255.0
+        option dns 8.8.8.8
