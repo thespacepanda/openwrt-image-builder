@@ -1,2 +1,3 @@
 config 'mesh' 'bat0'
         option interfaces 'mesh0'
+        option gw_mode 'client'

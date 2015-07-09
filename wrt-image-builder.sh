@@ -36,7 +36,6 @@ mkdir -p files/etc/config
 
 # Replace ip address in config files
 sed -i 's/IP_ADDRESS/$IP_ADDRESS/' files/etc/hotplug.d/button/10-slider
-sed -i 's/IP_ADDRESS/$IP_ADDRESS/' files/etc/config/network
 
 # Configure package repositiories
 PACKAGE_BASE_URL="$HTTP/$OPENWRT_BASE_URL/$ARCH/generic/packages"
@@ -62,3 +61,5 @@ make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl" FILES=files/
 # Copy the generated image back to the current directory
 popd
 cp -f /tmp/$IMAGE_BUILDER/bin/$ARCH/*mr3040* images/
+mv images/*v2-squashfs-factory.bin images/$HOSTNAME-factory.bin
+mv images/*v2-squashfs-sysupgrade.bin images/$HOSTNAME-sysupgrade.bin

@@ -1,4 +1,5 @@
 config dhcp 'mesh_bridge'
+        option ignore '1'
 	      option interface 'mesh_bridge'
         option start '20'
         option limit '150'
