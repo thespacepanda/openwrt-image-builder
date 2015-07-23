@@ -9,14 +9,8 @@ OPENWRT_BASE_URL="downloads.openwrt.org/snapshots/$VERSION"
 SRC="$HTTPS/$OPENWRT_BASE_URL/$ARCH/generic/$IMAGE_BUILDER.tar.bz2"
 TARFILE="$IMAGE_BUILDER.tar.bz2"
 
-echo "Enter a hostname for this node: "
-read HOSTNAME
-
-echo "Enter an ip address for when this node is in gateway mode: "
-read IP_ADDRESS
-
 # Get Dependencies (Ubuntu only for now)
-# sudo apt-get install -y subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc
+sudo apt-get install -y subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc
 
 # Download Image Builder
 if ! [ -e $TARFILE ]
@@ -27,15 +21,31 @@ fi
 rm -rf /tmp/$IMAGE_BUILDER
 echo "Untarring image builder..."
 tar xjf $TARFILE -C /tmp
-echo "Copying configuration files.."
-cp -Rf files /tmp/$IMAGE_BUILDER
-echo "Moving into build directory..."
+echo "Moving into build directory"
 pushd /tmp
 cd $IMAGE_BUILDER
-mkdir -p files/etc/config
+echo "Creating configuration directory"
+mkdir -p files/etc
 
-# Replace ip address in config files
-sed -i 's/IP_ADDRESS/$IP_ADDRESS/' files/etc/hotplug.d/button/10-slider
+# Get node specific settings
+TYPE=0
+while [ $TYPE -ne 1 ] && [ $TYPE -ne 2 ]
+do
+    echo "AP (1) or Gateway (2): "
+    read TYPE
+done
+echo "Enter a hostname for this node: "
+read HOSTNAME
+
+if [ $TYPE -eq 1 ]
+then
+    git clone https://github.com/bmuk/batman-ap files/etc/config
+else
+    git clone https://github.com/bmuk/batman-gateway files/etc/config
+    echo "Provide an unused IP address for the gateway: "
+    read IP
+    sed -i 's/10.0.0.1/$IP' files/etc/config/network
+fi
 
 # Configure package repositiories
 PACKAGE_BASE_URL="$HTTP/$OPENWRT_BASE_URL/$ARCH/generic/packages"
@@ -61,5 +71,3 @@ make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl" FILES=files/
 # Copy the generated image back to the current directory
 popd
 cp -f /tmp/$IMAGE_BUILDER/bin/$ARCH/*mr3040* images/
-mv images/*v2-squashfs-factory.bin images/$HOSTNAME-factory.bin
-mv images/*v2-squashfs-sysupgrade.bin images/$HOSTNAME-sysupgrade.bin

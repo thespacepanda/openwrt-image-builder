@@ -1,8 +1,0 @@
-config dhcp 'mesh_bridge'
-        option ignore '1'
-	      option interface 'mesh_bridge'
-        option start '20'
-        option limit '150'
-        option leasetime '1h'
-        option ra 'server'
-        option dhcpv6 'server'
