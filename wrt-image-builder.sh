@@ -9,8 +9,14 @@ OPENWRT_BASE_URL="downloads.openwrt.org/snapshots/$VERSION"
 SRC="$HTTPS/$OPENWRT_BASE_URL/$ARCH/generic/$IMAGE_BUILDER.tar.bz2"
 TARFILE="$IMAGE_BUILDER.tar.bz2"
 
-# Get Dependencies (Ubuntu only for now)
-sudo apt-get install -y subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc
+if [ -e /etc/redhat-release ]
+then
+  # Get Dependencies (Fedora)
+  sudo dnf install -y subversion make automake gcc gcc-c++ kernel-devel ncurses-devel zlib-devel gawk git ccache gettext openssl-devel libxslt
+else
+  # Get Dependencies (Ubuntu only for now)
+  sudo apt-get install -y subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc
+fi
 
 # Download Image Builder
 if ! [ -e $TARFILE ]
@@ -66,7 +72,7 @@ config 'system'
 EOF
 
 # Actually build the image, adding these packages
-make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl" FILES=files/
+make image PROFILE=TLMR3040 PACKAGES="kmod-batman-adv batctl alfred" FILES=files/
 
 # Copy the generated image back to the current directory
 popd
